@@ -1,4 +1,4 @@
-package com.greenkit.smart.database.provider;
+package com.greenkit.smart.database;
 
 import java.util.HashMap;
 

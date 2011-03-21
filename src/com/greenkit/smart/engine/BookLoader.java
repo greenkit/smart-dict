@@ -1,5 +1,5 @@
 package com.greenkit.smart.engine;
 
-public class Parser {
+public class BookLoader {
 
 }

@@ -28,13 +28,18 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.greenkit.smart.database.table.Smart;
 import com.greenkit.smart.database.type.Word;
 
-public class LibLoader extends Activity {
+/**
+ * The UI for load the books.
+ * @author greenkit
+ *
+ */
+public class BookLoaderActivity extends Activity {
 
 	private static final String TAG = "LibLoader";
 	private static final String FILE_ROOT = "/sdcard/";
 	private static final String SUFFIX_LIB = ".lib";
 	private static final String PATH_PARENT = "..";
-	private static final String LIB_DEFAULT_PATH = "libs";
+//	private static final String LIB_DEFAULT_PATH = "libs";
 
 	private GridView mGrid;
 	private FileAdapter mAdapter;
@@ -76,7 +81,7 @@ public class LibLoader extends Activity {
 				}
 				// It is not the library file
 				else {
-					Toast.makeText(LibLoader.this, R.string.toast_not_lib_file,
+					Toast.makeText(BookLoaderActivity.this, R.string.toast_not_lib_file,
 							Toast.LENGTH_SHORT).show();
 				}
 			}

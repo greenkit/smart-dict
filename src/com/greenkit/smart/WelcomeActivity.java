@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.greenkit.smart.database.table.Smart;
 
-public class Main extends Activity {
+public class WelcomeActivity extends Activity {
 
 	private ListView mList;
 
@@ -31,7 +31,7 @@ public class Main extends Activity {
 
 			@Override
 			public View newView(Context context, Cursor cursor, ViewGroup parent) {
-				return new TextView(Main.this);
+				return new TextView(WelcomeActivity.this);
 			}
 
 			@Override
@@ -41,7 +41,7 @@ public class Main extends Activity {
 			}
 		});
 
-        Intent intent = new Intent(this, LibLoader.class);
+        Intent intent = new Intent(this, BookLoaderActivity.class);
         startActivity(intent);
     }
 }
