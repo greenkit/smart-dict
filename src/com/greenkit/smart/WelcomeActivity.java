@@ -41,7 +41,7 @@ public class WelcomeActivity extends Activity {
 			}
 		});
 
-        Intent intent = new Intent(this, BookLoaderActivity.class);
+        Intent intent = new Intent(this, FileExplorerActivity.class);
         startActivity(intent);
     }
 }

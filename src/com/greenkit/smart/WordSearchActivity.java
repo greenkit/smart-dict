@@ -4,7 +4,7 @@ import android.app.Activity;
 
 /**
  * The UI for word search.
- * @author greenkit
+ * @author green
  *
  */
 public class WordSearchActivity extends Activity {

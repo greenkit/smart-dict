@@ -1,0 +1,25 @@
+package com.greenkit.smart.database.type;
+
+public class Book {
+
+    private String mName;
+    private int mWordNumber;
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setWordNumber(int number) {
+        if(number > 0) {
+            mWordNumber = number;
+        }
+    }
+
+    public int getWordNumber() {
+        return mWordNumber;
+    }
+}

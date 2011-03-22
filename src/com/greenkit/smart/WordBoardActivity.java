@@ -4,7 +4,7 @@ import android.app.Activity;
 
 /**
  * This class is used to display the word detail.
- * @author greenkit
+ * @author green
  *
  */
 public class WordBoardActivity extends Activity {
