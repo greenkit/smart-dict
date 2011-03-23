@@ -1,16 +1,17 @@
-package com.greenkit.smart.database.type;
+package com.greenkit.smart.datatype;
 
-public class Word {
+public class WordType {
 
     private String mWord;
     private String mSymbol;
     private String mTranslation;
     private String mPronunciation;
-    private String mExample;
+    private String mExamples;
     private String mBooks;
-    private int mStudyCount;
-    private int mMistakeCount;
-    private int mSearchCount;
+    private int    mStudyCount;
+    private int    mMistakeCount;
+    private int    mSearchCount;
+    private int    mLevel;
 
     public void setName(String name) {
         mWord = name;
@@ -45,11 +46,11 @@ public class Word {
     }
 
     public void setExample(String example) {
-        mExample = example;
+        mExamples = example;
     }
 
     public String getExample() {
-        return mExample;
+        return mExamples;
     }
 
     public void setBookRef(String ref) {
@@ -88,5 +89,15 @@ public class Word {
 
     public int getSearchCount() {
         return mSearchCount;
+    }
+
+    public void setLevel(int level) {
+        if(level > 0) {
+            mLevel = level;
+        }
+    }
+
+    public int getLevel() {
+        return mLevel;
     }
 }

@@ -25,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.greenkit.smart.database.table.Smart;
-import com.greenkit.smart.database.type.Word;
+import com.greenkit.smart.datatable.Smart;
+import com.greenkit.smart.datatype.WordType;
 
 /**
  * The UI for load the books.
@@ -141,7 +141,7 @@ public class FileExplorerActivity extends Activity {
             }
         }
 
-        private Word readWord() throws IOException {
+        private WordType readWord() throws IOException {
             String trans = null;
             String line = readLine();
 
@@ -149,7 +149,7 @@ public class FileExplorerActivity extends Activity {
                 return null;
             }
 
-            Word word = new Word();
+            WordType word = new WordType();
 
             for (int i = 0; i < line.length(); i++) {
                 char c = line.charAt(i);
@@ -183,7 +183,7 @@ public class FileExplorerActivity extends Activity {
         public void run() {
             showLoadingDialog();
             loading = true;
-            Word word = null;
+            WordType word = null;
             try {
                 while (loading && (word = readWord()) != null) {
                     insert(word);
@@ -203,7 +203,7 @@ public class FileExplorerActivity extends Activity {
             }
         }
 
-        private void insert(final Word word) {
+        private void insert(final WordType word) {
             ContentValues values = new ContentValues();
             values.put(Smart.Words.NAME, word.mName);
             values.put(Smart.Words.SOUNDMARK, word.mSoundmark);

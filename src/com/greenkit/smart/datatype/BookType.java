@@ -1,6 +1,6 @@
-package com.greenkit.smart.database.type;
+package com.greenkit.smart.datatype;
 
-public class Book {
+public class BookType {
 
     private String mName;
     private int mWordNumber;
