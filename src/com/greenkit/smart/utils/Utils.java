@@ -1,8 +1,10 @@
 package com.greenkit.smart.utils;
 
-public class TextUtils {
+import java.io.File;
 
-    private TextUtils() {
+public class Utils {
+
+    private Utils() {
     }
 
     /**
@@ -49,6 +51,29 @@ public class TextUtils {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * The path of directory must be included the suffix '/' If some path don't
+     * have the '/' character, we add it.
+     */
+    public static String formatDirectory(String dir) {
+        if (dir.endsWith(File.separator)) {
+            return dir;
+        } else {
+            return dir + File.separator;
+        }
+    }
+
+    /**
+     * Get the parent path according to the path string.
+     */
+    public static String getParentPath(String path) {
+        if (!path.endsWith(File.separator)) {
+            return path.substring(0, path.lastIndexOf(File.separator) + 1);
+        } else {
+            return path.substring(0, path.lastIndexOf(File.separator, path.length() - 2) + 1);
         }
     }
 }

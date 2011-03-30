@@ -1,4 +1,4 @@
-package com.greenkit.smart.datatable;
+package com.greenkit.smart.database.table;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -17,7 +17,7 @@ public class WordTable extends Table{
     public static final String COLUMN_NAME_LEVEL         = "level";
 
     public static void createTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " IF NOT EXISTS ("
+        db.execSQL("CREATE TABLE  IF NOT EXISTS " + TABLE_NAME + " ("
                 + COLUMN_NAME_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_NAME_WORD + " TEXT,"
                 + COLUMN_NAME_SYMBOL + " TEXT,"

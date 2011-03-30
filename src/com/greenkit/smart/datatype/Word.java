@@ -1,6 +1,6 @@
 package com.greenkit.smart.datatype;
 
-public class WordType {
+public class Word {
 
     private String mWord;
     private String mSymbol;
@@ -13,8 +13,8 @@ public class WordType {
     private int    mSearchCount;
     private int    mLevel;
 
-    public void setName(String name) {
-        mWord = name;
+    public void setWord(String word) {
+        mWord = word;
     }
 
     public String getWord() {

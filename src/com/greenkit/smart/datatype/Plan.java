@@ -1,7 +1,7 @@
 package com.greenkit.smart.datatype;
 
 
-public class PlanType {
+public class Plan {
 
     /**
      * The books you want to study, maybe one or two books. Two books will be

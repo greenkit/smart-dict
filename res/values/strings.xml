@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Smart</string>
+<resources>
+    <string name="app_name">Smart Dict</string>
     <string name="button_search">Search</string>
     <string name="hint_input_search">Input word to search</string>
-    <string name="toast_not_lib_file">It is not the correct file!</string>
-    <string name="load_word_from_file">Loading from \"<xliff:g id="filename">%s</xliff:g>\"</string>
+    <string name="toast_not_book_file">It is not the smart dict file!</string>
+    <string name="load_word_success">Success!</string>
+    <string name="loading_word">Loading word</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 
-    <string-array name="test_array">
-        <item>abandon</item>
-        <item>abuse</item>
-        <item>like</item>
-    </string-array>
 </resources>

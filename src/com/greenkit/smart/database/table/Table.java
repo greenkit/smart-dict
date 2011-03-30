@@ -1,4 +1,4 @@
-package com.greenkit.smart.datatable;
+package com.greenkit.smart.database.table;
 
 public class Table {
 
