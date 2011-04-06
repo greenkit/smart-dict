@@ -1,9 +1,16 @@
 package com.greenkit.smart;
 
+import java.lang.ref.WeakReference;
+
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -25,9 +32,14 @@ import com.greenkit.smart.database.table.WordTable;
  */
 public class SearchBoardActivity extends Activity {
 
+    static final int HANDLE_MESSAGE_SEARCH_WORD = 0;
+    static final long HANDLE_MESSAGE_SEARCH_DELAY = 500L;
+
     private ListView mWordList;
     private WordListAdapter mWordAdapter;
     private DatabaseHelper mDatabaseHelper;
+    private HandlerThread mSearchThread;
+    private SearchHandler mSearchHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,23 @@ public class SearchBoardActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         mDatabaseHelper = DatabaseHelper.getInstance(this);
         initUi();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSearchThread = new HandlerThread("search");
+        mSearchThread.start();
+        mSearchHandler = new SearchHandler(mSearchThread.getLooper(), this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mSearchThread != null) {
+            mSearchThread.quit();
+            mSearchThread = null;
+        }
     }
 
     private void initUi () {
@@ -45,9 +74,10 @@ public class SearchBoardActivity extends Activity {
         mWordList.setAdapter(mWordAdapter);
     }
 
-    private TextWatcher mSearchWordWatcher = new TextWatcher() {
+    private final TextWatcher mSearchWordWatcher = new TextWatcher() {
 
-        private String text = null;
+        private String text;
+        private Message message;
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -56,19 +86,27 @@ public class SearchBoardActivity extends Activity {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            text = s.toString();
+            text = s.toString().trim();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            String key = s.toString();
-            if (!key.trim().equalsIgnoreCase(text.trim())) {
-                mWordAdapter.changeCursor(mDatabaseHelper.queryWordByName(s.toString().trim()));
+            final String key = s.toString().trim();
+            if (!key.equalsIgnoreCase(text)) {
+                // If the interval of user input is less than the default value, the prior query will be canceled.
+                // Otherwise, do query.
+                if (message != null && SystemClock.uptimeMillis() - message.getWhen()
+                            < HANDLE_MESSAGE_SEARCH_DELAY) {
+                        mSearchHandler.removeMessages(HANDLE_MESSAGE_SEARCH_WORD);
+                }
+
+                message = mSearchHandler.obtainMessage(HANDLE_MESSAGE_SEARCH_WORD, key);
+                mSearchHandler.sendMessageDelayed(message, HANDLE_MESSAGE_SEARCH_DELAY);
             }
         }
     };
 
-    private static class WordListAdapter extends CursorAdapter {
+    private static final class WordListAdapter extends CursorAdapter {
 
         private LayoutInflater inflater;
         private int columnWord;
@@ -122,15 +160,45 @@ public class SearchBoardActivity extends Activity {
             }
 
             holder.word.setText(cursor.getString(columnWord));
-            holder.search.setText(String.valueOf(cursor.getInt(columnSearchCount)));
-            holder.study.setText(String.valueOf(cursor.getInt(columnStudyCount)));
-            holder.mistake.setText(String.valueOf(cursor.getInt(columnMistakeCount)));
+            holder.search.setText(cursor.getString(columnSearchCount));
+            holder.study.setText(cursor.getString(columnStudyCount));
+            holder.mistake.setText(cursor.getString(columnMistakeCount));
             holder.level.setText(cursor.getString(columnLevel));
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup group) {
             return inflater.inflate(R.layout.word_list_item, null, false);
+        }
+    }
+
+    private static final class SearchHandler extends Handler {
+
+        private final WeakReference<SearchBoardActivity> activityRef;
+
+        public SearchHandler(Looper looper, SearchBoardActivity activity) {
+            super(looper);
+            activityRef = new WeakReference<SearchBoardActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case HANDLE_MESSAGE_SEARCH_WORD:
+                final SearchBoardActivity activity = activityRef.get();
+                if (activity != null && !activity.isFinishing()) {
+                    final String key = msg.obj.toString().trim();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.mWordAdapter.changeCursor(
+                                    activity.mDatabaseHelper.queryWordByName(key));
+                        }
+                    });
+                }
+
+                break;
+            }
         }
     }
 }

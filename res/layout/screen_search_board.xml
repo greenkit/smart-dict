@@ -31,9 +31,4 @@
             android:visibility="gone"
             android:text="@string/button_search"/>
     </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/list_divider_height"
-        android:background="@android:drawable/divider_horizontal_dim_dark"/>
 </LinearLayout>

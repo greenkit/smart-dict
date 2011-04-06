@@ -7,8 +7,6 @@
     <dimen name="text_size_medium">22sp</dimen>
     <dimen name="text_size_large">30sp</dimen>
 
-    <dimen name="list_divider_height">5dip</dimen>
-
     <dimen name="word_list_item_padding">5dip</dimen>
     <dimen name="word_list_item_indicator_margin_horizontal">5dip</dimen>
     <dimen name="word_list_ltem_indicator_size">22dip</dimen>
