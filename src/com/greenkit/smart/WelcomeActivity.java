@@ -31,7 +31,8 @@ public class WelcomeActivity extends Activity {
 //            }
 //        });
 
-        Intent intent = new Intent(this, FileLoaderActivity.class);
+//        Intent intent = new Intent(this, FileLoaderActivity.class);
+        Intent intent = new Intent(this, SearchBoardActivity.class);
         startActivity(intent);
     }
 }

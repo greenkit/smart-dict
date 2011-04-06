@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <dimen name="file_grid_item_width">70dip</dimen>
     <dimen name="file_grid_vertical_spacing">5dip</dimen>
+
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">22sp</dimen>
+    <dimen name="text_size_large">30sp</dimen>
+
+    <dimen name="list_divider_height">5dip</dimen>
+
+    <dimen name="word_list_item_padding">5dip</dimen>
+    <dimen name="word_list_item_indicator_margin_horizontal">5dip</dimen>
+    <dimen name="word_list_ltem_indicator_size">22dip</dimen>
 </resources>

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.greenkit.smart.database.DatabaseHelper;
 import com.greenkit.smart.datatype.BookHeader;
 import com.greenkit.smart.datatype.Word;
 import com.greenkit.smart.engine.BookLoader;
@@ -65,7 +64,7 @@ public class FileLoaderActivity extends Activity {
                     loadBook(file);
                 }
 
-                // It is not the book file
+                // It is not a book file
                 else {
                     FileLoaderActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
@@ -272,7 +271,7 @@ public class FileLoaderActivity extends Activity {
                 convertView = inflater.inflate(R.layout.file_grid_item, parent, false);
             }
 
-            TextView text = (TextView) convertView.findViewById(R.id.label);
+            TextView text = (TextView) convertView.findViewById(R.id.grid_item_label);
             FileInfo info = mList[position];
             text.setText(info.name);
             text.setCompoundDrawablesWithIntrinsicBounds(0, info.icon, 0, 0);

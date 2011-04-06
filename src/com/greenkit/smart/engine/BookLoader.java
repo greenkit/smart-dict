@@ -58,6 +58,8 @@ public class BookLoader extends Thread {
         int counter = 0;
 
         try {
+            mDatabaseHelper.beginTransaction();
+
             while (true) {
                 if(mCancel) {
                     mOnBookLoadListener.onComplete(LOAD_STATE_CANCEL);
@@ -69,6 +71,7 @@ public class BookLoader extends Thread {
                 if(word == null) {
                     if(mParser.getBookHeader().getWordNumber() == counter) {
                         mOnBookLoadListener.onComplete(LOAD_STATE_SUCCESS);
+                        mDatabaseHelper.setTransactionSuccessful();
                     } else {
                         mOnBookLoadListener.onComplete(LOAD_STATE_ERROR);
                     }
@@ -77,7 +80,7 @@ public class BookLoader extends Thread {
                     mOnBookLoadListener.onLoadWord(word);
                     counter++;
                     // Insert word to database;
-                    mDatabaseHelper.insertWord(word);
+                    mDatabaseHelper.insertWordInTransaction(word);
                 }
 
                 // Give chance for UI thread change its state;
@@ -90,6 +93,8 @@ public class BookLoader extends Thread {
             Log.d(TAG, e.getLocalizedMessage());
             mOnBookLoadListener.onComplete(LOAD_STATE_ERROR);
         } finally {
+            mDatabaseHelper.endTransaction();
+
             if(mParser != null) {
                 mParser.close();
                 mParser = null;

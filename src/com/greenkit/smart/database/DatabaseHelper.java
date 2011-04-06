@@ -2,6 +2,7 @@ package com.greenkit.smart.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
@@ -16,7 +17,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "smart_dict.db";
     public static final int DATABASE_VERSION = 1;
 
+//    private static final String[] WORD_TABLE_COLUMNS_ALL = {
+//        WordTable.COLUMN_NAME_ID,
+//        WordTable.COLUMN_NAME_WORD,
+//        WordTable.COLUMN_NAME_SYMBOL,
+//        WordTable.COLUMN_NAME_TRANSLATION,
+//        WordTable.COLUMN_NAME_EXAMPLES,
+//        WordTable.COLUMN_NAME_LEVEL,
+//        WordTable.COLUMN_NAME_PRONUNCIATION,
+//        WordTable.COLUMN_NAME_BOOKS,
+//        WordTable.COLUMN_NAME_STUDY_COUNT,
+//        WordTable.COLUMN_NAME_SEARCH_COUNT,
+//        WordTable.COLUMN_NAME_MISTAKE_COUNT
+//    };
+
+    private static final String[] WORD_TABLE_COLUMNS_LIST = {
+        WordTable.COLUMN_NAME_ID,
+        WordTable.COLUMN_NAME_WORD,
+        WordTable.COLUMN_NAME_SYMBOL,
+        WordTable.COLUMN_NAME_TRANSLATION,
+        WordTable.COLUMN_NAME_STUDY_COUNT,
+        WordTable.COLUMN_NAME_SEARCH_COUNT,
+        WordTable.COLUMN_NAME_MISTAKE_COUNT,
+        WordTable.COLUMN_NAME_LEVEL,
+    };
+
     private static DatabaseHelper sDatabaseHelper;
+
+    private SQLiteDatabase mWritableDatabase;
 
     private DatabaseHelper(Context context, String name, CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -45,6 +73,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         PlanTable.dropTable(db);
 
         onCreate(db);
+    }
+
+    public Cursor queryWordByName (String name) {
+        String selection = null;
+        String[] args = null;
+
+        if (name != null) {
+            selection = WordTable.COLUMN_NAME_WORD + " like ?";
+            args = new String[] { name + "%" };
+        }
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query(WordTable.TABLE_NAME, WORD_TABLE_COLUMNS_LIST,
+                selection, args, null, null, WordTable.ORDER_BY, null);
+        return c;
+    }
+
+    public void beginTransaction () {
+        mWritableDatabase = getWritableDatabase();
+        mWritableDatabase.beginTransaction();
+    }
+
+    public void setTransactionSuccessful () {
+        if (mWritableDatabase != null) {
+            mWritableDatabase.setTransactionSuccessful();
+        }
+    }
+
+    public void endTransaction () {
+        if (mWritableDatabase != null) {
+            mWritableDatabase.endTransaction();
+            mWritableDatabase.close();
+            mWritableDatabase = null;
+        }
+    }
+
+    public long insertWordInTransaction (Word word) {
+        long id = -1;
+
+        if (mWritableDatabase != null) {
+            id = insertWord(word, mWritableDatabase);
+        }
+
+        return id;
     }
 
     public long insertWord(Word word) {

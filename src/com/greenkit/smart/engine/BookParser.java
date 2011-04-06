@@ -81,8 +81,8 @@ public class BookParser {
             word.setWord(line.substring(0, offset).trim());
             word.setSymbol(line.substring(offset).trim());
 
+            String trans = mReader.readLine();
             line = mReader.readLine();
-            String trans = line;
             while(!Utils.isEmpty(line)) {
                 trans = trans + "\n" + line;
                 line = mReader.readLine();

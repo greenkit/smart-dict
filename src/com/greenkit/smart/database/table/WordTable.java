@@ -4,6 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class WordTable extends Table{
 
+    public static final String ORDER_BY = WordTable.COLUMN_NAME_WORD + " ASC ";
+
     public static final String TABLE_NAME                = "vocabulary";
     public static final String COLUMN_NAME_WORD          = "word";
     public static final String COLUMN_NAME_SYMBOL        = "symbol";
