@@ -11,30 +11,30 @@ import com.greenkit.smart.database.table.BookTable;
 import com.greenkit.smart.database.table.PlanTable;
 import com.greenkit.smart.database.table.WordTable;
 import com.greenkit.smart.datatype.Word;
+import com.greenkit.smart.utils.Utils;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "smart_dict.db";
     public static final int DATABASE_VERSION = 1;
 
-//    private static final String[] WORD_TABLE_COLUMNS_ALL = {
-//        WordTable.COLUMN_NAME_ID,
-//        WordTable.COLUMN_NAME_WORD,
-//        WordTable.COLUMN_NAME_SYMBOL,
-//        WordTable.COLUMN_NAME_TRANSLATION,
-//        WordTable.COLUMN_NAME_EXAMPLES,
-//        WordTable.COLUMN_NAME_LEVEL,
-//        WordTable.COLUMN_NAME_PRONUNCIATION,
-//        WordTable.COLUMN_NAME_BOOKS,
-//        WordTable.COLUMN_NAME_STUDY_COUNT,
-//        WordTable.COLUMN_NAME_SEARCH_COUNT,
-//        WordTable.COLUMN_NAME_MISTAKE_COUNT
-//    };
+    private static final String[] WORD_TABLE_COLUMNS_ALL = {
+        WordTable.COLUMN_NAME_ID,
+        WordTable.COLUMN_NAME_WORD,
+        WordTable.COLUMN_NAME_SYMBOL,
+        WordTable.COLUMN_NAME_TRANSLATION,
+        WordTable.COLUMN_NAME_EXAMPLES,
+        WordTable.COLUMN_NAME_LEVEL,
+        WordTable.COLUMN_NAME_PRONUNCIATION,
+        WordTable.COLUMN_NAME_BOOKS,
+        WordTable.COLUMN_NAME_STUDY_COUNT,
+        WordTable.COLUMN_NAME_SEARCH_COUNT,
+        WordTable.COLUMN_NAME_MISTAKE_COUNT
+    };
 
     private static final String[] WORD_TABLE_COLUMNS_LIST = {
         WordTable.COLUMN_NAME_ID,
         WordTable.COLUMN_NAME_WORD,
-        WordTable.COLUMN_NAME_SYMBOL,
         WordTable.COLUMN_NAME_TRANSLATION,
         WordTable.COLUMN_NAME_STUDY_COUNT,
         WordTable.COLUMN_NAME_SEARCH_COUNT,
@@ -75,13 +75,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public Cursor queryWordByName (String name) {
+    public int increaseWordSeachCountById (long id) {
+        int count = 0;
+        if (id >= 0) {
+            SQLiteDatabase db = getWritableDatabase();
+            count = getWordSeachCountById(id, db) + 1;
+            ContentValues values = new ContentValues(1);
+            values.put(WordTable.COLUMN_NAME_SEARCH_COUNT, count);
+            db.update(WordTable.TABLE_NAME, values, WordTable.COLUMN_NAME_ID + "=?",
+                    new String[] { String.valueOf(id) });
+            db.close();
+        }
+
+        return count;
+    }
+
+    private int getWordSeachCountById (long id, SQLiteDatabase db) {
+        int count = 0;
+        Cursor c = db.query(WordTable.TABLE_NAME, new String[] { WordTable.COLUMN_NAME_ID,
+                WordTable.COLUMN_NAME_SEARCH_COUNT }, WordTable.COLUMN_NAME_ID + "=?",
+                    new String[] { String.valueOf(id) }, null, null, null);
+
+        if (c.moveToFirst()) {
+            count = c.getInt(c.getColumnIndexOrThrow(WordTable.COLUMN_NAME_SEARCH_COUNT));
+        }
+
+        c.close();
+
+        return count;
+    }
+
+    public Cursor queryWordDetailById(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query(WordTable.TABLE_NAME, WORD_TABLE_COLUMNS_ALL,
+                WordTable.COLUMN_NAME_ID + "=?", new String[] { String.valueOf(id) },
+                    null, null, null);
+
+        return c;
+    }
+
+    public Cursor queryWordBySearchKey (String key) {
         String selection = null;
         String[] args = null;
 
-        if (name != null) {
+        if (!Utils.isEmpty(key)) {
             selection = WordTable.COLUMN_NAME_WORD + " like ?";
-            args = new String[] { name + "%" };
+            args = new String[] { key + "%" };
         }
 
         SQLiteDatabase db = getReadableDatabase();

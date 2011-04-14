@@ -21,5 +21,7 @@
         parent="android:Theme">
 
     <item name="android:textColor">@color/white</item>
+    <item name="android:includeFontPadding">false</item>
+    <item name="android:windowBackground">@drawable/bg</item>
     </style>
 </resources>

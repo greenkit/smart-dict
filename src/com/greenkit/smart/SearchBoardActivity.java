@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,10 +18,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.greenkit.smart.database.DatabaseHelper;
 import com.greenkit.smart.database.table.WordTable;
@@ -35,11 +38,14 @@ public class SearchBoardActivity extends Activity {
     static final int HANDLE_MESSAGE_SEARCH_WORD = 0;
     static final long HANDLE_MESSAGE_SEARCH_DELAY = 500L;
 
+    static final String INTENT_EXTRA_WORD_ID = "word-id";
+
     private ListView mWordList;
     private WordListAdapter mWordAdapter;
     private DatabaseHelper mDatabaseHelper;
     private HandlerThread mSearchThread;
     private SearchHandler mSearchHandler;
+    private String mSearchKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class SearchBoardActivity extends Activity {
         mSearchThread = new HandlerThread("search");
         mSearchThread.start();
         mSearchHandler = new SearchHandler(mSearchThread.getLooper(), this);
+        mSearchHandler.obtainMessage(HANDLE_MESSAGE_SEARCH_WORD, mSearchKey).sendToTarget();
     }
 
     @Override
@@ -70,14 +77,23 @@ public class SearchBoardActivity extends Activity {
         setContentView(R.layout.screen_search_board);
         mWordList = (ListView) findViewById(R.id.word_list);
         ((EditText) findViewById(R.id.input_search)).addTextChangedListener(mSearchWordWatcher);
-        mWordAdapter = new WordListAdapter(this, mDatabaseHelper.queryWordByName(null));
+        mWordAdapter = new WordListAdapter(this, mDatabaseHelper.queryWordBySearchKey(null));
         mWordList.setAdapter(mWordAdapter);
+        mWordList.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> list, View view, int position, long id) {
+                Intent intent = new Intent(SearchBoardActivity.this, WordDetailActivity.class);
+                intent.putExtra(INTENT_EXTRA_WORD_ID, id);
+                startActivity(intent);
+            }
+        });
     }
 
     private final TextWatcher mSearchWordWatcher = new TextWatcher() {
 
-        private String text;
-        private Message message;
+        private String mText;
+        private Message mMessage;
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -86,54 +102,58 @@ public class SearchBoardActivity extends Activity {
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            text = s.toString().trim();
+            mText = s.toString().trim();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             final String key = s.toString().trim();
-            if (!key.equalsIgnoreCase(text)) {
-                // If the interval of user input is less than the default value, the prior query will be canceled.
+            if (!key.equalsIgnoreCase(mText)) {
+                // If the interval of user input is less than the default value,
+                // the prior query will be canceled.
                 // Otherwise, do query.
-                if (message != null && SystemClock.uptimeMillis() - message.getWhen()
+                if (mMessage != null && SystemClock.uptimeMillis() - mMessage.getWhen()
                             < HANDLE_MESSAGE_SEARCH_DELAY) {
                         mSearchHandler.removeMessages(HANDLE_MESSAGE_SEARCH_WORD);
                 }
 
-                message = mSearchHandler.obtainMessage(HANDLE_MESSAGE_SEARCH_WORD, key);
-                mSearchHandler.sendMessageDelayed(message, HANDLE_MESSAGE_SEARCH_DELAY);
+                mMessage = mSearchHandler.obtainMessage(HANDLE_MESSAGE_SEARCH_WORD, key);
+                mSearchHandler.sendMessageDelayed(mMessage, HANDLE_MESSAGE_SEARCH_DELAY);
             }
         }
     };
 
     private static final class WordListAdapter extends CursorAdapter {
 
-        private LayoutInflater inflater;
-        private int columnWord;
-        private int columnSearchCount;
-        private int columnStudyCount;
-        private int columnMistakeCount;
-        private int columnLevel;
+        private LayoutInflater mInflater;
+        private int mColumnWord;
+        private int mColumnTranslation;
+        private int mColumnSearchCount;
+        private int mColumnStudyCount;
+        private int mColumnMistakeCount;
+        private int mColumnLevel;
 
         private static class ViewHolder {
-            private TextView word;
-            private TextView search;
-            private TextView study;
-            private TextView mistake;
-            private TextView level;
+            private TextView mWord;
+            private TextView mTranslation;
+            private TextView mSearch;
+            private TextView mStudy;
+            private TextView mMistake;
+            private TextView mLevel;
 
             public ViewHolder (View view) {
-                word = (TextView) view.findViewById(R.id.word);
-                search = (TextView) view.findViewById(R.id.search_count);
-                study = (TextView) view.findViewById(R.id.study_count);
-                mistake = (TextView) view.findViewById(R.id.mistake_count);
-                level = (TextView) view.findViewById(R.id.level);
+                mWord = (TextView) view.findViewById(R.id.word);
+                mTranslation = (TextView) view.findViewById(R.id.translation);
+                mSearch = (TextView) view.findViewById(R.id.search_count);
+                mStudy = (TextView) view.findViewById(R.id.study_count);
+                mMistake = (TextView) view.findViewById(R.id.mistake_count);
+                mLevel = (TextView) view.findViewById(R.id.level);
             }
         }
 
         public WordListAdapter(Context context, Cursor c) {
             super(context, c);
-            inflater = LayoutInflater.from(context);
+            mInflater = LayoutInflater.from(context);
             storeColumnIndex(c);
         }
 
@@ -144,11 +164,12 @@ public class SearchBoardActivity extends Activity {
         }
 
         private void storeColumnIndex (Cursor c) {
-            columnWord = c.getColumnIndex(WordTable.COLUMN_NAME_WORD);
-            columnSearchCount = c.getColumnIndex(WordTable.COLUMN_NAME_SEARCH_COUNT);
-            columnStudyCount = c.getColumnIndex(WordTable.COLUMN_NAME_STUDY_COUNT);
-            columnMistakeCount = c.getColumnIndex(WordTable.COLUMN_NAME_MISTAKE_COUNT);
-            columnLevel = c.getColumnIndex(WordTable.COLUMN_NAME_LEVEL);
+            mColumnWord = c.getColumnIndex(WordTable.COLUMN_NAME_WORD);
+            mColumnTranslation = c.getColumnIndex(WordTable.COLUMN_NAME_TRANSLATION);
+            mColumnSearchCount = c.getColumnIndex(WordTable.COLUMN_NAME_SEARCH_COUNT);
+            mColumnStudyCount = c.getColumnIndex(WordTable.COLUMN_NAME_STUDY_COUNT);
+            mColumnMistakeCount = c.getColumnIndex(WordTable.COLUMN_NAME_MISTAKE_COUNT);
+            mColumnLevel = c.getColumnIndex(WordTable.COLUMN_NAME_LEVEL);
         }
 
         @Override
@@ -159,16 +180,17 @@ public class SearchBoardActivity extends Activity {
                 view.setTag(holder);
             }
 
-            holder.word.setText(cursor.getString(columnWord));
-            holder.search.setText(cursor.getString(columnSearchCount));
-            holder.study.setText(cursor.getString(columnStudyCount));
-            holder.mistake.setText(cursor.getString(columnMistakeCount));
-            holder.level.setText(cursor.getString(columnLevel));
+            holder.mWord.setText(cursor.getString(mColumnWord));
+            holder.mTranslation.setText(cursor.getString(mColumnTranslation));
+            holder.mSearch.setText(cursor.getString(mColumnSearchCount));
+            holder.mStudy.setText(cursor.getString(mColumnStudyCount));
+            holder.mMistake.setText(cursor.getString(mColumnMistakeCount));
+            holder.mLevel.setText(cursor.getString(mColumnLevel));
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup group) {
-            return inflater.inflate(R.layout.word_list_item, null, false);
+            return mInflater.inflate(R.layout.word_list_item, null, false);
         }
     }
 
@@ -187,12 +209,13 @@ public class SearchBoardActivity extends Activity {
             case HANDLE_MESSAGE_SEARCH_WORD:
                 final SearchBoardActivity activity = activityRef.get();
                 if (activity != null && !activity.isFinishing()) {
-                    final String key = msg.obj.toString().trim();
+                    final String key = msg.obj == null ? null : msg.obj.toString().trim();
+                    activity.mSearchKey = key;
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             activity.mWordAdapter.changeCursor(
-                                    activity.mDatabaseHelper.queryWordByName(key));
+                                    activity.mDatabaseHelper.queryWordBySearchKey(key));
                         }
                     });
                 }

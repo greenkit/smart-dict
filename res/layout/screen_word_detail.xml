@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:textSize="@dimen/text_size_large"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/symbol"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dip"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_medium"/>
+
+        <include
+            layout="@layout/divider"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <include
+                layout="@layout/word_statistics"/>
+        /</LinearLayout>
+
+        <include
+            layout="@layout/divider"/>
+
+        <TextView
+            android:id="@+id/translation"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_medium"/>
+    </LinearLayout>
+</LinearLayout>

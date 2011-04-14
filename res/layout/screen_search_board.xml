@@ -8,27 +8,15 @@
         android:id="@+id/word_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:divider="@drawable/divider"
+        android:cacheColorHint="@color/transparent"
         android:layout_weight="1"/>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/input_search"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/input_search"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:singleLine="true"
-            android:inputType="text"
-            android:hint="@string/hint_input_search"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/button_ok"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:text="@string/button_search"/>
-    </LinearLayout>
+        android:layout_width="fill_parent"
+        android:singleLine="true"
+        android:inputType="text"
+        android:hint="@string/hint_input_search"/>
 </LinearLayout>

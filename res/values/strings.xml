@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Smart Dict</string>
-    <string name="button_search">Search</string>
+    <string name="app_name">Smart Dictionary</string>
     <string name="hint_input_search">Input word to search</string>
-    <string name="toast_not_book_file">It is not the smart dict file!</string>
+    <string name="toast_not_book_file">It is not the smart dictionary file!</string>
     <string name="load_word_success">Success!</string>
     <string name="loading_word">Loading word</string>
     <string name="cancel">Cancel</string>

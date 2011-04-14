@@ -22,6 +22,8 @@
 
         <activity android:name="SearchBoardActivity"/>
 
+        <activity android:name="WordDetailActivity"/>
+
     </application>
 
 </manifest>

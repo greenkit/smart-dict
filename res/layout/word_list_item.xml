@@ -2,89 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="@dimen/word_list_item_padding">
+    android:padding="5dip">
 
     <TextView
         android:id="@+id/word"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_medium"
         android:includeFontPadding="false"
-        android:layout_toLeftOf="@+id/word_info"
         android:layout_centerVertical="true"
         android:singleLine="true"/>
 
-    <RelativeLayout
-        android:id="@id/word_info"
+    <TextView
+        android:id="@+id/translation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:textColor="@color/grey"
+        android:textStyle="italic"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true">
-        <View
-            android:id="@+id/indicator_search"
-            android:layout_width="@dimen/word_list_ltem_indicator_size"
-            android:layout_height="@dimen/word_list_ltem_indicator_size"
-            android:layout_marginLeft="@dimen/word_list_item_indicator_margin_horizontal"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_indicator_search"/>
+        android:layout_toRightOf="@id/word"
+        android:layout_toLeftOf="@+id/word_statistics"/>
 
-        <TextView
-            android:id="@+id/search_count"
-            android:layout_toRightOf="@id/indicator_search"
-            android:textSize="@dimen/text_size_small"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/indicator_study"
-            android:layout_width="@dimen/word_list_ltem_indicator_size"
-            android:layout_height="@dimen/word_list_ltem_indicator_size"
-            android:layout_marginLeft="@dimen/word_list_item_indicator_margin_horizontal"
-            android:layout_toRightOf="@id/search_count"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_indicator_study"/>
-
-        <TextView
-            android:id="@+id/study_count"
-            android:layout_toRightOf="@id/indicator_study"
-            android:textSize="@dimen/text_size_small"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/indicator_mistake"
-            android:layout_width="@dimen/word_list_ltem_indicator_size"
-            android:layout_height="@dimen/word_list_ltem_indicator_size"
-            android:layout_marginLeft="@dimen/word_list_item_indicator_margin_horizontal"
-            android:layout_toRightOf="@id/study_count"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_indicator_mistake"/>
-
-        <TextView
-            android:id="@+id/mistake_count"
-            android:layout_toRightOf="@id/indicator_mistake"
-            android:textSize="@dimen/text_size_small"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:id="@+id/indicator_level"
-            android:layout_width="@dimen/word_list_ltem_indicator_size"
-            android:layout_height="@dimen/word_list_ltem_indicator_size"
-            android:layout_marginLeft="@dimen/word_list_item_indicator_margin_horizontal"
-            android:layout_toRightOf="@id/mistake_count"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_indicator_level"/>
-
-        <TextView
-            android:id="@+id/level"
-            android:layout_toRightOf="@id/indicator_level"
-            android:textSize="@dimen/text_size_small"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+    <include
+        android:id="@id/word_statistics"
+        layout="@layout/word_statistics"/>
 </RelativeLayout>
